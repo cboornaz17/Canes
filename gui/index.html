@@ -9,11 +9,14 @@
 
   <h1>Welcome to pallas</h1>
   <p>Insert your image here to be changed</p>
-  <fieldset>
-    <div>
-      <label>Image!</label>
-      <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg"/>
-    </div>
-  </fieldset>
+  <form action="/getImage">
+    <fieldset>
+      <div>
+        <label>Image!</label>
+        <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/>
+        <input type="submit" value="Submit">
+      </div>
+    </fieldset>
+  </form>
 </body>
 </html>
