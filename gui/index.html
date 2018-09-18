@@ -9,11 +9,16 @@
 
   <h1>Welcome to pallas</h1>
   <p>Insert your image here to be changed</p>
-  <form action="/getImage">
+  <form action="/images" method="post">
     <fieldset>
       <div>
         <label>Image!</label>
-        <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/>
+        <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/><br>
+        <!--
+        <input type="radio" name="imgMethod" value="RemoveRedeye"> Remove Redeye<br>
+        <input type="radio" name="imgMethod" value="BoxFaces"> Box Faces<br>
+        <input type="radio" name="imgMethod" value="GrayScale"> Grayscale<br>
+        /-->
         <input type="submit" value="Submit">
       </div>
     </fieldset>

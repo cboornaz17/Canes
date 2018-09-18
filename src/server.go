@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
   "html/template"
+	"fmt"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -15,8 +16,9 @@ import (
 )
 
 var config = Config{}
-var dao = MoviesDAO{}
+var dao = ImagesDAO{}
 
+// Serve index.html to handle user input
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
   tmpl, err := template.ParseFiles("../gui/index.html")
 
@@ -38,67 +40,73 @@ func ConvertImage(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// GET list of movies
-func AllMoviesEndPoint(w http.ResponseWriter, r *http.Request) {
-	movies, err := dao.FindAll()
+// GET list of images
+func AllImagesEndPoint(w http.ResponseWriter, r *http.Request) {
+	images, err := dao.FindAll()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, movies)
+	respondWithJson(w, http.StatusOK, images)
 }
 
-// GET a movie by its ID
-func FindMovieEndpoint(w http.ResponseWriter, r *http.Request) {
+// GET a image by its ID
+func FindImageEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	movie, err := dao.FindById(params["id"])
+	image, err := dao.FindById(params["id"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid Movie ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid Image ID")
 		return
 	}
-	respondWithJson(w, http.StatusOK, movie)
+	respondWithJson(w, http.StatusOK, image)
 }
 
-// POST a new movie
-func CreateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
+// POST a new image
+func CreateImageEndPoint(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("in function")
 	defer r.Body.Close()
-	var movie Movie
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+	var image Image
+	t, err := json.NewDecoder(r.Body).Token()
+	if err != nil {
+		fmt.Println("ERR")
+	}
+	fmt.Printf("%T: %v\n", t,t)
+	if err := json.NewDecoder(r.Body).Decode(&image); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	movie.ID = bson.NewObjectId()
-	if err := dao.Insert(movie); err != nil {
+	image.ID = bson.NewObjectId()
+	if err := dao.Insert(image); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusCreated, movie)
+	respondWithJson(w, http.StatusCreated, image)
 }
 
-// PUT update an existing movie
-func UpdateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
+// PUT update an existing image
+func UpdateImageEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	var movie Movie
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+	var image Image
+	if err := json.NewDecoder(r.Body).Decode(&image); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	if err := dao.Update(movie); err != nil {
+	if err := dao.Update(image); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
-// DELETE an existing movie
-func DeleteMovieEndPoint(w http.ResponseWriter, r *http.Request) {
+// DELETE an existing image
+func DeleteImageEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	var movie Movie
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+	var image Image
+	if err := json.NewDecoder(r.Body).Decode(&image); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	if err := dao.Delete(movie); err != nil {
+	if err := dao.Delete(image); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -129,11 +137,12 @@ func init() {
 func main() {
 	r := mux.NewRouter()
   r.HandleFunc("/", IndexHandler)
-	r.HandleFunc("/movies", AllMoviesEndPoint).Methods("GET")
-	r.HandleFunc("/movies", CreateMovieEndPoint).Methods("POST")
-	r.HandleFunc("/movies", UpdateMovieEndPoint).Methods("PUT")
-	r.HandleFunc("/movies", DeleteMovieEndPoint).Methods("DELETE")
-	r.HandleFunc("/movies/{id}", FindMovieEndpoint).Methods("GET")
+	r.HandleFunc("/images", CreateImageEndPoint).Methods("POST")
+	r.HandleFunc("/images", AllImagesEndPoint).Methods("GET")
+	//r.HandleFunc("/images", CreateImageEndPoint).Methods("POST")
+	r.HandleFunc("/images", UpdateImageEndPoint).Methods("PUT")
+	r.HandleFunc("/images", DeleteImageEndPoint).Methods("DELETE")
+	r.HandleFunc("/images/{id}", FindImageEndpoint).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
