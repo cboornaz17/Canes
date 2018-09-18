@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+  "html/template"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -15,6 +16,27 @@ import (
 
 var config = Config{}
 var dao = MoviesDAO{}
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+  tmpl, err := template.ParseFiles("../gui/index.html")
+
+  if err != nil {
+    // Log the detailed error
+    log.Println(err.Error())
+    // Return a generic "Internal Server Error" message
+    http.Error(w, http.StatusText(500), 500)
+    return
+  }
+
+  if err := tmpl.ExecuteTemplate(w, "index.html",  nil); err != nil {
+    log.Println(err.Error())
+    http.Error(w, http.StatusText(500), 500)
+  }
+}
+
+func ConvertImage(w http.ResponseWriter, r *http.Request) {
+
+}
 
 // GET list of movies
 func AllMoviesEndPoint(w http.ResponseWriter, r *http.Request) {
