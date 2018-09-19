@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Pallas!!!</title>
-  <link rel="stylesheet" href="https://github.com/cboornaz17/pallas/blob/master/gui/assets/styles.css">
+  <link rel="stylesheet" type="text/css" href="assets/styles.css">
 </head>
 
 <body>
@@ -14,12 +14,14 @@
       <div>
         <label>Image!</label>
         <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/><br>
+        <canvas id="canvas"></canvas><br>
         <!--
         <input type="radio" name="imgMethod" value="RemoveRedeye"> Remove Redeye<br>
         <input type="radio" name="imgMethod" value="BoxFaces"> Box Faces<br>
         <input type="radio" name="imgMethod" value="GrayScale"> Grayscale<br>
         /-->
         <input type="submit" value="Submit">
+        <script type="text/javascript" src="../scripts/convertImage.js"</script>
       </div>
     </fieldset>
   </form>
