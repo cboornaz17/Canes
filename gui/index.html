@@ -9,21 +9,38 @@
 
   <h1>Welcome to pallas</h1>
   <p>Insert your image here to be changed</p>
+  <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/><br>
+  <canvas id="canvas"></canvas><br>
   <form action="/images" method="post">
     <fieldset>
       <div>
         <label>Image!</label>
-        <input type="file" id="newImage" name="newImage" accept="image/png, image/jpeg, image/jpg"/><br>
-        <canvas id="canvas"></canvas><br>
-        <!--
-        <input type="radio" name="imgMethod" value="RemoveRedeye"> Remove Redeye<br>
-        <input type="radio" name="imgMethod" value="BoxFaces"> Box Faces<br>
-        <input type="radio" name="imgMethod" value="GrayScale"> Grayscale<br>
-        /-->
-        <input type="submit" value="Submit">
-        <script type="text/javascript" src="../scripts/convertImage.js"</script>
+        <input type="hidden" id="base64" value="data">
+        <input type="submit" id="submit" value="Submit">
+
       </div>
     </fieldset>
   </form>
+  <script>
+  document.getElementById('newImage').onchange = function(e) {
+    var img = new Image();
+    img.onload = draw;
+    img.onerror = failed;
+    img.src = URL.createObjectURL(this.files[0]);
+  };
+  function draw() {
+    var canvas = document.getElementById('canvas');
+    canvas.width = this.width;
+    canvas.height = this.height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(this, 0,0);
+    document.getElementById('base64').value = canvas.toDataURL('image/jpg', 1.0);
+    console.log(document.getElementById('base64').value);
+  }
+  function failed() {
+    console.error("The provided file couldn't be loaded as an Image media");
+  }
+
+  </script>
 </body>
 </html>

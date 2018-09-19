@@ -9,5 +9,4 @@ import (
 type Movie struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
 	Name        string        `bson:"name" json:"name"`
-	Data        int64         `bson:"data" json:"data"`
 }

@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
   "html/template"
-	"fmt"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -63,14 +62,8 @@ func FindImageEndpoint(w http.ResponseWriter, r *http.Request) {
 
 // POST a new image
 func CreateImageEndPoint(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("in function")
 	defer r.Body.Close()
 	var image Image
-	t, err := json.NewDecoder(r.Body).Token()
-	if err != nil {
-		fmt.Println("ERR")
-	}
-	fmt.Printf("%T: %v\n", t,t)
 	if err := json.NewDecoder(r.Body).Decode(&image); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
