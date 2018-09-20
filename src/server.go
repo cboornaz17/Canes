@@ -19,7 +19,7 @@ var dao = ImagesDAO{}
 
 // Serve index.html to handle user input
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-  tmpl, err := template.ParseFiles("../gui/index.html")
+  tmpl, err := template.ParseFiles("gui/index.html")
 
   if err != nil {
     // Log the detailed error
@@ -129,7 +129,9 @@ func init() {
 // Define HTTP request routes
 func main() {
 	r := mux.NewRouter()
+	//r.PathPrefix("../gui/").Handler(http.StripPrefix("../gui/", http.FileServer(http.Dir("../gui"))))
   r.HandleFunc("/", IndexHandler)
+	//r.Handle("/gui/", http.StripPrefix("/gui/", http.FileServer(http.Dir("gui"))))
 	r.HandleFunc("/images", CreateImageEndPoint).Methods("POST")
 	r.HandleFunc("/images", AllImagesEndPoint).Methods("GET")
 	//r.HandleFunc("/images", CreateImageEndPoint).Methods("POST")
