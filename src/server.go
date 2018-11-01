@@ -8,6 +8,10 @@ import (
 
 	"gopkg.in/mgo.v2/bson"
 
+	"fmt"
+	//"io"
+	//"strings"
+
 	"github.com/gorilla/mux"
 	. "github.com/cboornaz17/pallas/src/config"
   . "github.com/cboornaz17/pallas/src/dao"
@@ -62,9 +66,13 @@ func FindImageEndpoint(w http.ResponseWriter, r *http.Request) {
 
 // POST a new image
 func CreateImageEndPoint(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("hit")
 	defer r.Body.Close()
+
 	var image Image
+	
 	if err := json.NewDecoder(r.Body).Decode(&image); err != nil {
+		log.Fatal(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
@@ -74,6 +82,7 @@ func CreateImageEndPoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJson(w, http.StatusCreated, image)
+	log.Println("Finished creating an image")
 }
 
 // PUT update an existing image
